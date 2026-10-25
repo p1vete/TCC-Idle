@@ -2,6 +2,9 @@ const itemDatabase = {
   1: {
     id: 1,
     name: 'Espada de Ferro',
+    sprite: 'Espada_Comum.png',
+    spriteRotation: 45,
+    spriteScale: 1.19,
     quantity: 1,
     price: 100,
     stackable: false,
@@ -9,11 +12,14 @@ const itemDatabase = {
     class: 'weapon',
     type: 'slash',
     attribute: 'strength',
-    att_value: 10
+    att_value: 10,
+    description: 'Não é lá a melhor espada, mas serve.'
   },
   2: {
     id: 2,
     name: 'Poção de Saúde',
+    sprite: 'poção de vida.png',
+    spriteScale: 0.95,
     quantity: 1,
     price: 20,
     stackable: true,
@@ -21,11 +27,14 @@ const itemDatabase = {
     class: 'consumable',
     type: 'heal',
     attribute: 'hp',
-    att_value: 50
+    att_value: 50,
+    description: 'Gostinho de morango.'
   },
   3: {
     id: 3,
     name: 'Escudo de Madeira',
+    sprite: 'escudo.png',
+    spriteScale: 2.06,
     quantity: 1,
     price: 85,
     stackable: false,
@@ -33,11 +42,14 @@ const itemDatabase = {
     class: 'shield',
     type: 'protection',
     attribute: 'defense',
-    att_value: 10
+    att_value: 10,
+    description: 'Diz o Gerson que ele não quebra, espero que seja verdade...'
   },
   4: {
     id: 4,
     name: 'Machado de Lenhador',
+    sprite: 'Machado_comum.png',
+    spriteScale: 1.19,
     quantity: 1,
     price: 150,
     stackable: false,
@@ -45,11 +57,15 @@ const itemDatabase = {
     class: 'weapon',
     type: 'mining',
     attribute: 'strength',
-    att_value: 10
+    att_value: 10,
+    description: 'Parece que venderam o machado do Robert para o lojista, mas cobrar 150 moedas por ele é um absurdo.'
   },
   5: {
     id: 5,
     name: 'Picareta',
+    sprite: 'picareta.png',
+    spriteScale: 1.45,
+    spriteOffsetY: 9,
     quantity: 1,
     price: 60,
     stackable: false,
@@ -57,11 +73,15 @@ const itemDatabase = {
     class: 'weapon',
     type: 'mining',
     attribute: 'strength',
-    att_value: 7
+    att_value: 7,
+    description: 'É... Não vale a pena...'
   },
   6: {
     id: 6,
     name: 'Martelo de Guerra',
+    sprite: 'martelo.png',
+    spriteScale: 1.4,
+    spriteOffsetY: 10,
     quantity: 1,
     price: 90,
     stackable: false,
@@ -70,11 +90,14 @@ const itemDatabase = {
     type: 'blunt',
     attribute: 'strength',
     att_value: 13,
+    description: 'Gostei desse. Bate forte igual a Ceres... Só não vou conseguir esquivar como ela',
     bonuses: { strength: 13, defense: -2 }
   },
   7: {
     id: 7,
     name: 'Anel da Fortuna · Sorte +1',
+    sprite: 'anel.png',
+    spriteScale: 0.75,
     quantity: 1,
     price: 15,
     stackable: false,
@@ -82,11 +105,14 @@ const itemDatabase = {
     class: 'accessory',
     type: 'ring',
     attribute: 'luck',
-    att_value: 1
+    att_value: 1,
+    description: 'Melhor que nada, né?'
   },
   8: {
     id: 8,
     name: 'Pingente da Sorte · Sorte +2',
+    sprite: 'pingente.png',
+    spriteScale: 1,
     quantity: 1,
     price: 30,
     stackable: false,
@@ -94,11 +120,14 @@ const itemDatabase = {
     class: 'accessory',
     type: 'pendant',
     attribute: 'luck',
-    att_value: 2
+    att_value: 2,
+    description: 'Me sinto com sorte!'
   },
   9: {
     id: 9,
     name: 'Amuleto da Fortuna · Sorte +3',
+    sprite: 'amuleto.png',
+    spriteScale: 1.12,
     quantity: 1,
     price: 45,
     stackable: false,
@@ -106,11 +135,14 @@ const itemDatabase = {
     class: 'accessory',
     type: 'amulet',
     attribute: 'luck',
-    att_value: 3
+    att_value: 3,
+    description: 'Acho que vou jogar na loteria!'
   },
   10: {
     id: 10,
     name: 'Relíquia do Pântano · Sorte +5',
+    sprite: 'relíquia.png',
+    spriteScale: 1.35,
     quantity: 1,
     price: 75,
     stackable: false,
@@ -118,11 +150,14 @@ const itemDatabase = {
     class: 'accessory',
     type: 'relic',
     attribute: 'luck',
-    att_value: 5
+    att_value: 5,
+    description: 'Agora sim! Nunca mais perco no cara ou coroa!'
   },
   11: {
     id: 11,
     name: 'Lança',
+    sprite: 'lança.png',
+    spriteScale: 1.25,
     quantity: 1,
     price: 90,
     stackable: false,
@@ -131,11 +166,14 @@ const itemDatabase = {
     type: 'pierce',
     attribute: 'strength',
     att_value: 9,
+    description: 'Dizem que é o melhor tipo de arma, vamos ver...',
     bonuses: { strength: 9, defense: 2 }
   },
   12: {
     id: 12,
     name: 'Arco',
+    sprite: 'Arco_Comum.png',
+    spriteScale: 1.2,
     quantity: 1,
     price: 85,
     stackable: false,
@@ -144,11 +182,15 @@ const itemDatabase = {
     type: 'ranged',
     attribute: 'strength',
     att_value: 7,
+    description: 'Quero ver me acertarem à distância! Mas quero ver se consigo acertar também...',
     bonuses: { strength: 7, defense: 4 }
   },
   13: {
     id: 13,
     name: 'Foice',
+    sprite: 'foice_comum.png',
+    spriteScale: 1.2,
+    spriteOffsetY: -2,
     quantity: 1,
     price: 80,
     stackable: false,
@@ -157,11 +199,14 @@ const itemDatabase = {
     type: 'slash',
     attribute: 'strength',
     att_value: 10,
+    description: 'Olha, a foide de certa entidade mata ao toque, pena que essa não seja para tanto...',
     bonuses: { strength: 10, luck: 1 }
   },
   14: {
     id: 14,
     name: 'Vara de Pesca',
+    sprite: 'vara pesca.png',
+    spriteScale: 1.45,
     quantity: 1,
     price: 80,
     stackable: false,
@@ -170,11 +215,16 @@ const itemDatabase = {
     type: 'fishing',
     attribute: 'strength',
     att_value: 6,
+    description: 'Por que eu usaria uma no combate? Talvez com a isca certa...',
     bonuses: { strength: 6, luck: 5 }
   },
   15: {
     id: 15,
     name: 'adaga',
+    sprite: 'adaga.png',
+    spriteRotation: 180,
+    spriteScale: 1.45,
+    spriteOffsetY: -3,
     quantity: 1,
     price: 60,
     stackable: false,
@@ -182,7 +232,8 @@ const itemDatabase = {
     class: 'weapon',
     type: 'stab',
     attribute: 'strength',
-    att_value: 7
+    att_value: 7,
+    description: 'Assim... prefiro a espada, ao menos é barata.'
   }
 };
 
@@ -202,5 +253,17 @@ const estoque = [
 const inventarioInicial = [
   createCatalogItem(1),
   createCatalogItem(2, { quantity: 2 }),
-  createCatalogItem(3)
+  createCatalogItem(3),
+  createCatalogItem(4),
+  createCatalogItem(5),
+  createCatalogItem(6),
+  createCatalogItem(7),
+  createCatalogItem(8),
+  createCatalogItem(9),
+  createCatalogItem(10),
+  createCatalogItem(11),
+  createCatalogItem(12),
+  createCatalogItem(13),
+  createCatalogItem(14),
+  createCatalogItem(15)
 ];

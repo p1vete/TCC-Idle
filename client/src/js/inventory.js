@@ -52,6 +52,26 @@ function normalizeItem(item) {
     id: Number(item.id),
     catalogId,
     name,
+    ...(typeof source.description === 'string'
+      ? { description: source.description }
+      : {}),
+    ...(typeof source.sprite === 'string'
+      ? {
+        sprite: source.sprite,
+        spriteRotation: Number.isFinite(source.spriteRotation)
+          ? source.spriteRotation
+          : 0,
+        spriteScale: Number.isFinite(source.spriteScale)
+          ? source.spriteScale
+          : 1,
+        spriteOffsetX: Number.isFinite(source.spriteOffsetX)
+          ? source.spriteOffsetX
+          : 0,
+        spriteOffsetY: Number.isFinite(source.spriteOffsetY)
+          ? source.spriteOffsetY
+          : 0
+      }
+      : {}),
     quantity,
     price,
     stackable: source.stackable !== false,

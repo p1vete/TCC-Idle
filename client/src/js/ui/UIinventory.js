@@ -13,6 +13,7 @@ class InventoryUI {
 
   static render() {
     const sellMode = InventoryUI.isSellMode();
+    document.body.dataset.mode = sellMode ? 'sell' : 'inventory';
     if (sellMode) {
       document.title = 'Vender itens — Mochileiro';
       const pageTitle = document.querySelector('.game-title');
@@ -53,31 +54,103 @@ class InventoryUI {
     itemDiv.className = 'inventory-item';
     itemDiv.dataset.itemId = item.id;
     itemDiv.dataset.index = index;
+    const toggleEquipment = event => {
+      if (sellMode || event.target.closest('.item-details') || !item.wearable) return;
+      event.stopPropagation();
+      if (inventoryLocked || !Inventory.canEquipItem(item)) return;
+      if (Inventory.toggleEquip(item.id)) InventoryUI.render();
+    };
+    itemDiv.addEventListener('click', toggleEquipment);
+    itemDiv.addEventListener('keydown', event => {
+      if (
+        event.target !== itemDiv ||
+        !['Enter', ' '].includes(event.key)
+      ) return;
+      event.preventDefault();
+      toggleEquipment(event);
+    });
+    itemDiv.setAttribute(
+      'aria-label',
+      sellMode ? `${item.name}, ações de venda` : `${item.name}, detalhes e ações`
+    );
+    itemDiv.tabIndex = 0;
+
+    if (item.sprite) {
+      const sprite = document.createElement('img');
+      sprite.className = 'item-sprite';
+      sprite.src = `../../assets/aaa/${encodeURIComponent(item.sprite)}`;
+      sprite.alt = item.name;
+      sprite.draggable = false;
+      sprite.style.transform =
+        `translate(${item.spriteOffsetX || 0}px, ${item.spriteOffsetY || 0}px) ` +
+        `rotate(${item.spriteRotation || 0}deg) scale(${item.spriteScale || 1})`;
+      itemDiv.appendChild(sprite);
+    }
 
     const info = document.createElement('div');
     info.className = 'item-info';
 
-    const name = document.createElement('span');
-    name.className = 'item-name';
-    name.textContent = item.name;
+    if (!item.sprite) {
+      const name = document.createElement('span');
+      name.className = 'item-name';
+      name.textContent = item.name;
+      info.appendChild(name);
+    }
 
-    const quantity = document.createElement('span');
-    quantity.className = 'item-quantity';
-    quantity.textContent = `x${item.quantity}`;
-
-    info.appendChild(name);
-    if (item.stackable) {
+    const sellValue = sellMode ? Shop.getSellValue(item) : 0;
+    if (item.stackable && !sellMode) {
+      const quantity = document.createElement('span');
+      quantity.className = 'item-quantity';
+      quantity.textContent = `x${item.quantity}`;
       info.appendChild(quantity);
     }
-    const sellValue = sellMode ? Shop.getSellValue(item) : 0;
+
+    itemDiv.appendChild(info);
+
+    const details = document.createElement('div');
+    details.className = 'item-details';
+    details.setAttribute('role', 'group');
+
+    const detailsName = document.createElement('strong');
+    detailsName.className = 'item-details-name';
+    detailsName.textContent = item.name;
+    details.appendChild(detailsName);
+
+    const stats = item.bonuses && Object.keys(item.bonuses).length
+      ? item.bonuses
+      : item.attribute && item.att_value
+        ? { [item.attribute]: item.att_value }
+        : {};
+    const statLabels = {
+      strength: 'Força',
+      hp: 'Vida',
+      defense: 'Defesa',
+      luck: 'Sorte'
+    };
+    const statsElement = document.createElement('div');
+    statsElement.className = 'item-details-stats';
+    Object.entries(stats).forEach(([stat, value]) => {
+      if (!statLabels[stat]) return;
+      const statElement = document.createElement('span');
+      statElement.textContent =
+        `${statLabels[stat]} ${value > 0 ? '+' : ''}${value}`;
+      statsElement.appendChild(statElement);
+    });
+    if (statsElement.childElementCount) details.appendChild(statsElement);
+
     if (sellMode) {
       const saleValue = document.createElement('span');
       saleValue.className = 'item-sale-value';
       saleValue.textContent = `Venda: ${sellValue} ouro`;
-      info.appendChild(saleValue);
+      details.appendChild(saleValue);
     }
 
-    itemDiv.appendChild(info);
+    if (item.description && document.body.dataset.page !== 'combat') {
+      const description = document.createElement('p');
+      description.className = 'item-details-description';
+      description.textContent = item.description;
+      details.appendChild(description);
+    }
 
     if (sellMode) {
       const sellBtn = document.createElement('button');
@@ -89,42 +162,21 @@ class InventoryUI {
         event.stopPropagation();
         Shop.sellInventoryItem(index);
       };
-      itemDiv.appendChild(sellBtn);
-      return itemDiv;
-    }
-
-    const removeBtn = document.createElement('button');
-    removeBtn.className = 'item-remove-btn';
-    removeBtn.textContent = 'X';
-    removeBtn.setAttribute('aria-label', `Remover ${item.name}`);
-    removeBtn.title = `Remover ${item.name}`;
-    removeBtn.onclick = event => {
-      event.stopPropagation();
-      InventoryUI.removeItem(index);
-    };
-    itemDiv.appendChild(removeBtn);
-
-    if (item.wearable) {
-      const equipBtn = document.createElement('button');
-      equipBtn.className = 'item-equip-btn';
-      equipBtn.textContent = item.equipped ? 'Tirar' : 'Equipar';
-      equipBtn.setAttribute(
-        'aria-label',
-        `${item.equipped ? 'Desequipar' : 'Equipar'} ${item.name}`
-      );
-      equipBtn.title = `${item.equipped ? 'Desequipar' : 'Equipar'} ${item.name}`;
-      equipBtn.disabled = !Inventory.canEquipItem(item) && !item.equipped || inventoryLocked;
-      equipBtn.onclick = (e) => {
-        e.stopPropagation();
-        if (inventoryLocked) return;
-        Inventory.toggleEquip(item.id);
-        InventoryUI.render();
+      details.appendChild(sellBtn);
+    } else {
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'item-remove-btn';
+      removeBtn.textContent = 'Excluir item';
+      removeBtn.setAttribute('aria-label', `Excluir ${item.name}`);
+      removeBtn.title = `Excluir ${item.name}`;
+      removeBtn.onclick = event => {
+        event.stopPropagation();
+        InventoryUI.removeItem(index);
       };
-      itemDiv.appendChild(equipBtn);
-
+      details.appendChild(removeBtn);
     }
 
-    if (item.class === 'consumable') {
+    if (!sellMode && item.class === 'consumable') {
       const useBtn = document.createElement('button');
       useBtn.className = 'item-use-btn';
       useBtn.textContent = 'Usar';
@@ -137,9 +189,10 @@ class InventoryUI {
         useItem(item.id);
         if (typeof CombatUI !== 'undefined') CombatUI.updatePlayerHp();
       };
-      itemDiv.appendChild(useBtn);
+      details.appendChild(useBtn);
     }
 
+    itemDiv.appendChild(details);
     return itemDiv;
   }
 

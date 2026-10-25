@@ -256,6 +256,42 @@ body[data-page="shop"] .world-hud {
   background: #192422;
 }
 
+body.scene-page,
+body.combat-page {
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+body.scene-page.scene-leaving,
+body.combat-page.scene-leaving {
+  opacity: 0;
+  transform: scale(.99);
+  pointer-events: none;
+}
+
+body.scene-page.scene-entering,
+body.combat-page.scene-entering {
+  animation: scene-enter 220ms ease both;
+}
+
+@keyframes scene-enter {
+  from {
+    opacity: 0;
+    transform: scale(.99);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.scene-page,
+  body.combat-page {
+    animation: none;
+    transition: none;
+  }
+}
+
 .scene-hud {
   position: absolute;
   z-index: 20;
@@ -1047,52 +1083,120 @@ body[data-page="lobby"] .scene-hotspot.merchant-house:hover:not(:disabled) {
 .shop-counter .shop-body {
   position: absolute;
   top: 34%;
-  right: 17%;
+  right: 12%;
   bottom: 24%;
-  left: 17%;
+  left: 12%;
   max-height: none;
-  overflow-y: auto;
+  overflow: visible;
   padding: 0;
 }
 
 .shop-counter #shop-list {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 7px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-around;
+  gap: clamp(12px, 3vw, 32px);
+  overflow: visible;
 }
 
 .shop-counter .shop-item {
+  position: relative;
   display: flex;
-  justify-content: space-between;
+  flex: 1 1 0;
+  min-width: 0;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 7px 11px;
-  border: 1px solid rgb(255 235 199 / 54%);
-  border-radius: 5px;
-  background: rgb(46 29 18 / 82%);
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   color: #fff3dc;
+  cursor: pointer;
+  text-align: center;
 }
 
-.shop-counter .shop-item:hover {
-  background: rgb(76 47 27 / 94%);
-  transform: translateY(-2px);
+.shop-counter .shop-item:hover,
+.shop-counter .shop-item:focus-visible {
+  z-index: 10;
+  outline: none;
 }
 
-.shop-counter .shop-item .item-info {
-  flex: 1;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
+.shop-counter .shop-item-sprite {
+  display: block;
+  width: clamp(80px, 10vw, 120px);
+  height: clamp(80px, 10vw, 120px);
+  object-fit: contain;
+  image-rendering: pixelated;
+  pointer-events: none;
 }
 
-.shop-counter .shop-item .item-name {
+.shop-counter .shop-item-fallback-name {
+  display: grid;
+  width: clamp(80px, 10vw, 120px);
+  height: clamp(80px, 10vw, 120px);
+  place-items: center;
   font-weight: 800;
+}
+
+.shop-counter .shop-item-info {
+  display: flex;
+  min-height: 2em;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2px;
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  line-height: 1.2;
 }
 
 .shop-counter .shop-item .item-price {
   color: #f3d08a;
   font-weight: 800;
+  text-shadow: 0 2px 3px #27180f;
+}
+
+.shop-counter .shop-item .item-details {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.shop-counter .shop-item:first-child .item-details {
+  left: 0;
+  transform: none;
+}
+
+.shop-counter .shop-item:last-child .item-details {
+  right: 0;
+  left: auto;
+  transform: none;
+}
+
+.shop-counter .shop-item:hover .item-details,
+.shop-counter .shop-item:focus-visible .item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.shop-counter .item-details-name {
+  font-size: .95rem;
+}
+
+.shop-counter .item-details-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 8px;
+  color: #f3d08a;
+  font-size: .72rem;
+}
+
+.shop-counter .item-details-description {
+  margin: 0;
+  color: #eee;
+  font-size: .82rem;
+  line-height: 1.45;
 }
 
 .shop-sell-button {
@@ -1146,9 +1250,9 @@ body[data-page="lobby"] .scene-hotspot.merchant-house:hover:not(:disabled) {
 
   .shop-counter .shop-body {
     top: 34%;
-    right: 17%;
+    right: 8%;
     bottom: 24%;
-    left: 17%;
+    left: 8%;
   }
 
   .shop-counter #shop-list {
@@ -1156,13 +1260,17 @@ body[data-page="lobby"] .scene-hotspot.merchant-house:hover:not(:disabled) {
   }
 
   .shop-counter .shop-item {
-    gap: 6px;
-    padding: 4px 6px;
-    font-size: .72rem;
+    gap: 3px;
   }
 
-  .shop-counter .shop-item .item-info {
-    gap: 5px;
+  .shop-counter .shop-item-sprite,
+  .shop-counter .shop-item-fallback-name {
+    width: clamp(58px, 20vw, 82px);
+    height: clamp(58px, 20vw, 82px);
+  }
+
+  .shop-counter .shop-item-info {
+    font-size: clamp(.76rem, 3.5vw, .9rem);
   }
 }
 
@@ -1189,6 +1297,16 @@ body[data-page="lobby"] .scene-hotspot.merchant-house:hover:not(:disabled) {
   width: clamp(280px, 34vw, 440px);
   height: auto;
   filter: drop-shadow(0 8px 5px rgb(20 27 17 / 48%));
+}
+
+.forest-label {
+  position: absolute;
+  bottom: 35px;
+  left: clamp(18px, 5vw, 70px);
+  margin: 0;
+  color: #d7bd8c;
+  text-shadow: 0 2px 7px #1e3124;
+  pointer-events: none;
 }
 
 .forest-road-exit {
@@ -1221,27 +1339,12 @@ body[data-page="lobby"] .scene-hotspot.merchant-house:hover:not(:disabled) {
   outline-offset: 3px;
 }
 
-.forest-caption {
-  position: absolute;
-  bottom: 35px;
-  left: clamp(18px, 5vw, 70px);
-  max-width: 340px;
-  color: #fff8e9;
-  text-shadow: 0 2px 7px #1e3124;
-  pointer-events: none;
+.world-hud #wood-yield {
+  color: #d7bd8c;
+  font-size: .9em;
 }
 
-.forest-caption p {
-  margin: 5px 0;
-}
 
-.forest-caption #wood-yield {
-  display: inline-block;
-  padding: 7px 10px;
-  border-radius: 8px;
-  background: rgb(28 34 30 / 65%);
-  font-size: .88rem;
-}
 
 @media (max-width: 720px) {
   .scene-hud {
@@ -1668,12 +1771,34 @@ body[data-page="combat"] #enemy-box {
   color: #fff6df;
 }
 
+body[data-page="inventory"] .inventory-slot .inventory-item {
+  overflow: visible;
+}
+
+body[data-page="inventory"] .inventory-slot .inventory-item:hover,
+body[data-page="inventory"] .inventory-slot .inventory-item:focus-within {
+  z-index: 20;
+}
+
 .inventory-slot .item-info {
+  position: relative;
+  z-index: 1;
+  display: flex;
   min-width: 0;
   padding-right: 13px;
   gap: 2px;
   font-size: clamp(.48rem, .8vw, .7rem);
   line-height: 1.1;
+}
+
+.inventory-slot .item-sprite {
+  position: absolute;
+  inset: 4px;
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+  object-fit: contain;
+  image-rendering: pixelated;
+  pointer-events: none;
 }
 
 .inventory-slot .item-name {
@@ -1685,8 +1810,85 @@ body[data-page="combat"] #enemy-box {
   font-size: .9em;
 }
 
+.inventory-slot .item-details,
+.shop-counter .item-details {
+  position: absolute;
+  z-index: 2;
+  top: 100%;
+  left: 50%;
+  display: none;
+  width: min(220px, calc(100vw - 24px));
+  box-sizing: border-box;
+  padding: 10px;
+  transform: translateX(-50%);
+  border: 1px solid rgb(255 255 255 / 30%);
+  border-radius: 8px;
+  background: rgb(0 0 0 / 78%);
+  box-shadow: 0 12px 35px rgb(0 0 0 / 45%);
+  color: #fff;
+  text-align: left;
+}
+
+.inventory-slot:nth-child(n + 16) .item-details {
+  top: auto;
+  bottom: 100%;
+}
+
+.inventory-slot:nth-child(5n + 1) .item-details {
+  left: 0;
+  transform: none;
+}
+
+.inventory-slot:nth-child(5n) .item-details {
+  right: 0;
+  left: auto;
+  transform: none;
+}
+
+.inventory-slot .inventory-item:hover .item-details,
+.inventory-slot .inventory-item:focus-within .item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inventory-slot .item-details-name,
+.shop-counter .item-details-name {
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+
+.inventory-slot .item-details-stats,
+.shop-counter .item-details-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 8px;
+  color: #f3d08a;
+  font-size: .72rem;
+}
+
+.inventory-slot .item-details-description,
+.shop-counter .item-details-description {
+  margin: 0;
+  color: #eee;
+  font-size: .9rem;
+  line-height: 1.5;
+}
+
+.inventory-slot .item-details button {
+  position: static;
+  inset: auto;
+  width: 100%;
+  min-height: 24px;
+  padding: 4px 6px;
+  border-color: rgb(255 255 255 / 35%);
+  background: rgb(45 45 45 / 90%);
+  opacity: 1;
+  pointer-events: auto;
+  font-size: .72rem;
+}
+
 .inventory-slot .item-remove-btn,
-.inventory-slot .item-equip-btn,
 .inventory-slot .item-use-btn,
 .inventory-slot .item-sell-btn {
   min-height: 20px;
@@ -1704,7 +1906,6 @@ body[data-page="combat"] #enemy-box {
   line-height: 1;
 }
 
-.inventory-slot .item-equip-btn,
 .inventory-slot .item-use-btn,
 .inventory-slot .item-sell-btn {
   position: absolute;
@@ -1719,10 +1920,8 @@ body[data-page="combat"] #enemy-box {
   transition: opacity 120ms ease;
 }
 
-.inventory-slot .inventory-item:hover .item-equip-btn,
 .inventory-slot .inventory-item:hover .item-use-btn,
 .inventory-slot .inventory-item:hover .item-sell-btn,
-.inventory-slot .inventory-item:focus-within .item-equip-btn,
 .inventory-slot .inventory-item:focus-within .item-use-btn,
 .inventory-slot .inventory-item:focus-within .item-sell-btn {
   opacity: 1;
@@ -1730,7 +1929,6 @@ body[data-page="combat"] #enemy-box {
 }
 
 @media (hover: none) {
-  .inventory-slot .item-equip-btn,
   .inventory-slot .item-use-btn,
   .inventory-slot .item-sell-btn {
     opacity: 1;
@@ -1934,7 +2132,6 @@ body[data-page="inventory"] .inventory-slot .item-info {
 }
 
 body[data-page="inventory"] .inventory-slot .item-remove-btn,
-body[data-page="inventory"] .inventory-slot .item-equip-btn,
 body[data-page="inventory"] .inventory-slot .item-use-btn,
 body[data-page="inventory"] .inventory-slot .item-sell-btn {
   min-height: 23px;
@@ -1952,7 +2149,7 @@ body[data-page="inventory"] .inventory-slot .item-sell-btn {
   body[data-page="inventory"] #back-to-village-btn { top: 104px; left: 12px; }
   body[data-page="inventory"] .inventory { width: min(calc(100% - 4px), calc((100vh - 200px) * .9185)); }
   body[data-page="inventory"] #inventory-grid { gap: 4px; }
-  body[data-page="inventory"] .inventory-slot .item-sell-btn {
+  body[data-page="inventory"][data-mode="sell"] .inventory-slot .item-sell-btn {
     opacity: 1;
     pointer-events: auto;
   }

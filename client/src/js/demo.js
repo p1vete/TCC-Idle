@@ -228,11 +228,19 @@ class DemoGame {
     DemoGame.state.pendingTravel = null;
     DemoGame.state.notice = notice;
     DemoGame.save();
-    window.location.href = destination === 'forest'
+    const destinationPath = destination === 'forest'
       ? 'coleta.html'
       : destination === 'capital'
         ? 'missions.html'
         : '../../dev/lobbydev.html';
+    const navigate = () => {
+      window.location.href = destinationPath;
+    };
+    if (destination === 'lobby' && typeof DemoUI !== 'undefined') {
+      DemoUI.transitionTo(navigate);
+    } else {
+      navigate();
+    }
   }
 
   static handleDeath({ preserveNegotiationRequirements = false } = {}) {

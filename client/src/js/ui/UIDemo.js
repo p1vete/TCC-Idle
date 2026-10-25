@@ -1,9 +1,33 @@
 class DemoUI {
   static initialized = false;
   static dialogueTypingTimer = null;
+  static sceneTransitionKey = 'scene-transition-enter';
+
+  static startSceneTransition() {
+    if (sessionStorage.getItem(DemoUI.sceneTransitionKey) !== 'true') return;
+    sessionStorage.removeItem(DemoUI.sceneTransitionKey);
+    document.body.classList.add('scene-entering');
+    document.body.addEventListener('animationend', () => {
+      document.body.classList.remove('scene-entering');
+    }, { once: true });
+  }
+
+  static transitionTo(action) {
+    if (
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      action();
+      return;
+    }
+
+    sessionStorage.setItem(DemoUI.sceneTransitionKey, 'true');
+    document.body.classList.add('scene-leaving');
+    window.setTimeout(action, 220);
+  }
 
   static init() {
     if (DemoUI.initialized) return;
+    DemoUI.startSceneTransition();
     DemoGame.init();
     UI.loadGold();
     Resources.load();
@@ -54,7 +78,9 @@ class DemoUI {
 
     const travelHome = document.getElementById('return-to-village-btn');
     if (travelHome) {
-      travelHome.addEventListener('click', () => DemoGame.beginTravel('lobby'));
+      travelHome.addEventListener('click', () => {
+        DemoUI.transitionTo(() => DemoGame.beginTravel('lobby'));
+      });
     }
 
     const viewPath = document.body.dataset.page === 'lobby'
@@ -130,7 +156,9 @@ class DemoUI {
     const capitalVillage = document.getElementById('capital-village-btn');
     if (capitalVillage) {
       capitalVillage.addEventListener('click', () => {
-        window.location.href = '../../dev/lobbydev.html';
+        DemoUI.transitionTo(() => {
+          window.location.href = '../../dev/lobbydev.html';
+        });
       });
     }
 
@@ -151,7 +179,9 @@ class DemoUI {
     const shopToVillage = document.getElementById('shop-to-village-btn');
     if (shopToVillage) {
       shopToVillage.addEventListener('click', () => {
-        window.location.href = '../../dev/lobbydev.html';
+        DemoUI.transitionTo(() => {
+          window.location.href = '../../dev/lobbydev.html';
+        });
       });
     }
 
@@ -280,7 +310,7 @@ class DemoUI {
       if (returnTarget === 'missions') backButton.textContent = 'Voltar às missões';
       if (returnTarget === 'shop') backButton.textContent = 'Voltar à loja';
       backButton.addEventListener('click', () => {
-        window.location.href = returnTarget === 'missions'
+        const destination = returnTarget === 'missions'
           ? 'missions.html'
           : returnTarget === 'shop'
             ? 'shop.html'
@@ -289,6 +319,9 @@ class DemoUI {
           : document.body.dataset.page === 'guild' || returnTarget === 'capital'
             ? 'capital.html'
             : '../../dev/lobbydev.html';
+        DemoUI.transitionTo(() => {
+          window.location.href = destination;
+        });
       });
     }
 

@@ -51,9 +51,7 @@ class ResourcesUI {
       const axeEquipped = Inventory.getEquippedItems().some(
         item => Number(item.catalogId ?? item.id) === 4
       );
-      woodYield.textContent = axeEquipped
-        ? 'Seu machado rende 5 madeiras por coleta.'
-        : 'Sem machado equipado: 1 madeira por coleta.';
+      woodYield.textContent = `(+${axeEquipped ? 5 : 1})`;
     }
 
     const collectButton = document.getElementById('collect-wood-btn');

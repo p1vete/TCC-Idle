@@ -13,7 +13,7 @@
       <span>Dia <strong id="day-number">1</strong></span>
       <span hidden>Próximo dia <strong id="day-timer">05:00</strong></span>
       <span>Ouro <strong id="gold-display">200</strong></span>
-      <span>Madeira <strong id="wood-count">0</strong></span>
+      <span>Madeira <strong id="wood-count">0</strong> <span id="wood-yield" aria-label="Madeira por coleta">(+1)</span></span>
     </div>
     <button id="inventory-btn" class="hud-icon-button" type="button" aria-label="Abrir inventário" title="Inventário">▦</button>
   </header>
@@ -37,11 +37,7 @@
       Retornar para a vila
     </button>
 
-    <div class="forest-caption">
-      <p class="eyebrow">Floresta</p>
-      <p id="wood-yield">Sem machado equipado: 1 madeira por coleta.</p>
-      <p id="demo-notice" class="demo-notice" role="status" hidden></p>
-    </div>
+    <p class="eyebrow forest-label">Floresta</p>
 
     <section id="collection-intro-dialog" class="village-intro-dialog" role="dialog" aria-labelledby="collection-intro-name" aria-describedby="collection-intro-text" hidden>
       <p id="collection-intro-name" class="village-intro-name">Jorge</p>
